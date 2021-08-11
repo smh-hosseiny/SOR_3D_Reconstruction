@@ -13,6 +13,7 @@
     <li><a href="#about-the-project">About The Project</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#experiments">Experiments</a></li>
+    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -62,6 +63,13 @@ We tested our program on differents SORs and confirmed that the 3D reconstructed
 <p align="center">
     <img src="Figures/test.JPG" alt="Logo" width="800" height="600">
 </p>
+
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
 
 
 
