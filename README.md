@@ -38,7 +38,7 @@ The main steps to generate the 3D model:
 <!-- USAGE  -->
 ## Usage
 
-The program is implemented in [Matlab](https://www.mathworks.com/), run the program using the command window.
+The program is implemented in _[Matlab](https://www.mathworks.com/)_, run the program using the command window.
  ```sh
  GUI
  ```
