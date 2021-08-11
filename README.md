@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-    <img src="Figures/title.JPG" alt="Logo" width="780" height="140">
+    <img src="Figures/title.JPG" alt="Logo" width="780" height="130">
 </p>
 
 
