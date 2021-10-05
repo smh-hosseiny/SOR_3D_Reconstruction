@@ -1,4 +1,4 @@
-function I = surface_projection(Image, r1,r2, n, Pbase, K, p1, lb, ub, dh, nrow, ncol,ang)
+function RGB = surface_projection(Image,n, Pbase, K, p1, lb, ub, dh, nrow, ncol,ang)
 
 na = cross(n,[0;0;1])/norm(cross(n,[0;0;1]));
 Rna = axang2rotm([n' ang*pi/180]);
@@ -10,10 +10,10 @@ counter = 1;
 for i = linspace(lb,ub,15)
     circle.center = Pbase + i*dh*na;
     circle.normal = na;
-    j = r1:r2;
+    j = 0:180;
     a = n;
     b = cross(a,na);
-    for r = .01:.001:1
+    for r = .005:.001:1
         circle.radius = r;
         circle.Points = circle.center + circle.radius*(a*cosd(j)+b*sind(j));
         qcircle = K*[circle.Points];
@@ -32,21 +32,18 @@ cs = spline(h,[0 rh 0]);
 height = linspace(min(h),max(h),100);
 radius = ppval(cs,height);
 profile = [height; radius];
-
-
-
-
-
-h = linspace(lb*dh,ub*dh,nrow);
-th = linspace(r1,r2, ncol);
+th = linspace(0,180,800);
+h = linspace(lb*dh,ub*dh,250);
 l = length(h);
 t = length(th);
 
 projection = {};
 counter = 1;
+P = [];
 for hq = h
     rq = get_rval(profile,hq);
     Points = (Pbase + hq*na + rq*(a*cosd(th)+b*sind(th)));
+    P = [P Points];
     qcircle = K*Points;
     qcircle = bsxfun(@rdivide, qcircle, qcircle(3,:));
     projection{counter} = [get_idx(qcircle(1,:), size(Image,2)); get_idx(qcircle(2,:), size(Image,1))];
@@ -61,6 +58,21 @@ for i = 1:l
     end
 end
 
+m1 = reshape(P(1,:), [t, l]);
+m2 = reshape(P(2,:), [t, l]);
+m3 = reshape(P(3,:), [t, l]);
+
+figure('visible','off');
+surf(m1.',m2.',m3.', I,'FaceColor','texturemap','Edgecolor','none');
+axis equal;
+view(2);
+set(gca, 'Visible', 'off');
+set(gcf,'Color',[0 0 0]);
+F = getframe;
+RGB = frame2im(F);
+RGB = flipud(RGB);
+RGB = imresize(RGB, [nrow,ncol]);
+close;
 end
 
 function ix = get_idx(i, limit)
@@ -68,3 +80,4 @@ function ix = get_idx(i, limit)
     ix = min(ix, limit);
     ix = max(ix, 1);
 end
+

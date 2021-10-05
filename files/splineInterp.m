@@ -1,5 +1,5 @@
 function [finalX,finalY] = splineInterp(xCoordinates, yCoordinates) 
-    samplingRateIncrease = 2;
+    samplingRateIncrease = 5;
     numberOfKnots = length(xCoordinates);
     newXSamplePoints = linspace(1, numberOfKnots, numberOfKnots * samplingRateIncrease);
     % smoothedY = spline(xCoordinates, yCoordinates, newXSamplePoints);

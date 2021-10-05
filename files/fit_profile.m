@@ -4,18 +4,23 @@ na = cross(n,[0;0;1])/norm(cross(n,[0;0;1]));
 Rna = axang2rotm([n' ang*pi/180]);
 na = Rna*na;
 % len = ub - lb;
-len = 50;
+len = 40;
 rh = zeros(1, len);
 h = zeros(1, len);
 
 counter = 1;
 for i = linspace(lb,ub,len)
     center = Pbase + i*dh*na;
-    normal = na;
     j = 0:360;
     a = n;
     b = cross(a,na);
-    for r = .01:.001:1
+    
+%     r =  0.01* (cos(pi/2*(1.75/3*i+1)) + 2);
+%     Points = center + r*(a*cosd(j)+b*sind(j));
+%     qcircle = K*Points;
+%     qcircle = qcircle./repmat(qcircle(3,:),3,1);
+
+    for r = .005:.001:1
         radius = r;
         Points = center + radius*(a*cosd(j)+b*sind(j));
         qcircle = K*Points;
@@ -33,7 +38,7 @@ for i = linspace(lb,ub,len)
     plot(qcircle(1,:), qcircle(2,:),'g', 'linewidth',0.5);
     drawnow
 end
-title('Profile');
+% title('Profile');
 % prh = polyfit(h,rh,7);
 cs = spline(h,[0 rh 0]);
 height = linspace(min(h),max(h),250);

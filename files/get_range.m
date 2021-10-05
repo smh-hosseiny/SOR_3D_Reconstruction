@@ -27,8 +27,8 @@ lb = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, x,y, nrow, 'lower'), 0,[],[],
 
 options2 = optimoptions('fmincon');
 options2.Display = 'off';
-options2.MaxFunctionEvaluations = 1000;
-ub = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, x,y, nrow, 'upper'), lb+25,[],[],[],[],lb+1,lb+70,[],options2);
+options2.MaxFunctionEvaluations = 1250;
+ub = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, x,y, nrow, 'upper'), lb+20,[],[],[],[],lb+1,lb+70,[],options2);
 
 % ub_range = lb+1:lb+70;
 % c = [];

@@ -1,19 +1,17 @@
 
 function [finalX, finalY] = get_input(Image,mesg)
 
+workspace;  
 samplingRateIncrease = 50;
 % Image = imread(fullFileName);
-figure('WindowState','fullscreen');
+figure();
 imshow(Image, []);
 hold on;
-axis equal;
-title('Image', 'FontSize', 10);
+axis on;
+title('Input image', 'FontSize', 10);
 message = sprintf(mesg);
 uiwait(msgbox(message));
 [xCoordinates, yCoordinates] = ginput();
-close;
-figure; imshow(Image); hold on;
-plot(xCoordinates, yCoordinates, 'rx', 'linewidth', 2);
 
 numberOfKnots = length(xCoordinates);
 % Close gaps that you get when you draw too fast.
@@ -36,6 +34,8 @@ diffY = [1, diff(SmoothedYCoordinates)];
 bothZero = (diffX==0) & (diffY == 0);
 finalX = SmoothedXCoordinates(~bothZero);
 finalY = SmoothedYCoordinates(~bothZero);
-% plot(finalX, finalY, '-y');
+plot(finalX,finalY,'r','linewidth',1);
+plot(xCoordinates, yCoordinates, 'rx', 'linewidth', 1.4);
+drawnow
 end
 

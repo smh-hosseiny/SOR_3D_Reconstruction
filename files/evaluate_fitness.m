@@ -1,6 +1,6 @@
 function cost = evaluate_fitness(x,y,px,py,nrow,side)
     if strcmp(side, 'upper')
-        cost = abs(min(py) - 1.05*min(y));
+        cost = abs(min(y) - min(py)) + heaviside(min(y) - min(py)) * 100;
     else
 %         [~, my] = min(y);
 %         y_left = y(1:my);
