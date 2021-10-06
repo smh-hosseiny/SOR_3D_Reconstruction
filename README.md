@@ -79,6 +79,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 S.M.H. Hosseiny - [@twitter](https://twitter.com/sotospeakk?s=09) - hosseiny290@gmail.com
 
-Project Link: [GitHub Repo](https://github.com/smh-hosseiny/SOR_3D_Reconstruction)
-
 
