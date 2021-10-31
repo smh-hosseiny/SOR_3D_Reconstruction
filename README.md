@@ -1,9 +1,10 @@
-<!-- PROJECT LOGO -->
+# Single-view 3D Reconstruction of Surface of Revolution
+<!-- PROJECT LOGO 
 <br />
 <p align="center">
     <img src="Figures/title.JPG" alt="Logo" width="780" height="130">
 </p>
-
+-->
 
 
 <!-- TABLE OF CONTENTS -->
