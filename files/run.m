@@ -4,7 +4,7 @@ nrow = size(Image, 1);
 ncol = size(Image, 2);
 
 message = ['Please locate some points on the borders of the object' ...
-' (10-15 points). When you are done press Enter.'];
+' (around 15 points). When you are done press Enter.'];
 
 [xCoordinates, yCoordinates] = get_input(Image, message);
 %
@@ -20,12 +20,12 @@ dh = 0.01;
 
 e = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
-[reference,s1,s2] = get_surface_patterns(Image,nrow,ncol,x,y,K,n);
+[reference, s1, s2] = get_surface_patterns(Image,nrow,ncol,x,y,K,n);
 
 % find angle
 fprintf('\nfinding best angle...');
 tic
-best_angle = find_angle(Image,x,y,nrow,n,reference,s1,s2,Pbase,K,p1,dh);
+best_angle = find_angle(Image,x,y,nrow,s1,s2,n,reference,Pbase,K,p1,dh);
 e = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
 
