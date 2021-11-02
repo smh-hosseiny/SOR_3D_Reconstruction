@@ -62,7 +62,7 @@ Firstly, user is asked to locate some points on the boundaries of the SOR in ord
 
 We tested our program on differents SORs and confirmed that the 3D reconstructed models are consistent with the input images.
 <p align="center">
-    <img src="Figures/9.jpg" alt="Logo" width="1200" height="360">
+    <img src="Figures/9.jpg" alt="Logo" width="1200" height="350">
 </p>
 
 
