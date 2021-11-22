@@ -1,34 +1,22 @@
 
-function [lb, ub] = get_range(n, ang, x,y, Pbase, K, p1, nrow, dh)
+function [lb, ub] = get_range(n, ang, Pbase, K, p1, nrow, dh, top_point)
 
 na = cross(n,[0;0;1])/norm(cross(n,[0;0;1]));
 Rna = axang2rotm([n' ang*pi/180]);
 na = Rna*na;
 
-
-% options = optimoptions('surrogateopt');
-% options.Display = 'off';
-% options.MaxTime = 14;
-% options.PlotFcn = [];
-% intcon = 1;
-% lb = surrogateopt(@(i) Cost(i, Pbase, dh, na, n, K, p1, y, nrow, 'lower'), -2, 80, intcon, options);
 options = optimoptions('fmincon');
 options.Display = 'off';
-options.MaxFunctionEvaluations = 50;
-lb = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, x,y, nrow, 'lower'), 0,[],[],[],[],-1,50,[],options);
+options.MaxFunctionEvaluations = 500;
+lb = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, nrow, top_point,'lower'), ...
+    0,[],[],[],[],[],[],[],options);
 
-% lb_range = -1:50;
-% c = [];
-% for l = lb_range
-%    c = [c,  Cost(l, Pbase, dh, na, n, K, p1, x,y, nrow, 'lower')]; 
-% end
-% [~, i] = min(c);
-% lb = lb_range(i);
 
 options2 = optimoptions('fmincon');
 options2.Display = 'off';
 options2.MaxFunctionEvaluations = 1250;
-ub = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, x,y, nrow, 'upper'), lb+20,[],[],[],[],lb+1,lb+70,[],options2);
+ub = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, nrow, top_point,'upper'),...
+    lb,[],[],[],[],[],[],[],options2);
 
 % ub_range = lb+1:lb+70;
 % c = [];

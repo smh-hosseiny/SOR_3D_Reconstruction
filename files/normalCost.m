@@ -3,7 +3,7 @@ n = [cos(x(1))*sin(x(2));
     sin(x(1));
     cos(x(1))*cos(x(2))];
 cost = 0;
-for i = kmin:10:kmax
+for i = kmin:-10:kmax
     ps = [get_rval(p1,i);i];
     Ps = K\[ps;1];
     Qs = Ps-2*Ps'*n*n;

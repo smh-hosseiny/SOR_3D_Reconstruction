@@ -1,14 +1,14 @@
 function [imgq, t] = project_patterns(lb,ub,dh,profile,Pbase,na,a,b,Image,K)
 row = size(Image,2);
 col = size(Image,1);
-h = linspace(lb*dh, ub*dh, 640);
+h = linspace(lb*dh, ub*dh, 200);
 l = length(h);
 
 th = 0:0.1:180;
 t = length(th);
 P = [];
 for hq = h
-    rq = get_rval(profile,hq);
+    rq = interp1(profile(1,:), profile(2,:),hq,'linear','extrap');
     P = [P (Pbase + hq*na + rq*(a*cosd(th)+b*sind(th)))];
 end
 q = K*P;
@@ -20,7 +20,7 @@ for i = 1:l
     end
 end
 
-shift = floor(size(imgq,2)/10);
+shift = floor(size(imgq,2)/11);
 imgq = imgq(:,shift:end-shift,:);
 
 

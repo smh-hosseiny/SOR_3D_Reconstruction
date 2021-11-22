@@ -1,19 +1,27 @@
-function [sub,s1,s2] = get_surface_patterns(Image,nrow,ncol,x,y,K,n)
+function [sub,s1,s2] = get_surface_patterns(Image,nrow,ncol,p1,K,n)
 
-h = max(y) - min(y);
-if max(y)/nrow < 0.9
-    [nx, ny] = extrapolate_border(x,y,nrow,K,n,h);
-else
-    nx = x; ny = y;
+xl = p1(4,:);
+yl = p1(3,:);
+xr = zeros(1,length(xl));
+yr = zeros(1,length(xl));
+h = max(yl)-min(yl);
+for i = 1:length(xl)
+    ps = [xl(i);yl(i)];
+    Ps = K\[ps;1];
+    Qs = Ps-2*Ps'*n*n;
+    qs = K*Qs./Qs(3,:);
+    xr(i) = qs(1);
+    yr(i) = qs(2);
 end
 
+nx = [xl, flip(xr)];
+ny = [yl, flip(yr)];
 mask = poly2mask(nx, ny, nrow, ncol);
 I = bsxfun(@times, Image, cast(mask, 'like', Image));
-
-minx = min(x);
-maxx = max(x);
-miny = min(y);
-maxy = min(max(y)+0.05*h, nrow);
+minx = min(nx);
+maxx = max(nx);
+miny = min(ny);
+maxy = min(max(ny)+0.05*h, nrow);
 sub=imcrop(I,round([minx miny maxx-minx maxy-miny]));
 s1 = size(sub,1); s2=size(sub,2);
 end

@@ -2,16 +2,16 @@
 function [finalX, finalY] = get_input(Image,mesg)
 
 workspace;  
-samplingRateIncrease = 50;
+samplingRateIncrease = 20;
 % Image = imread(fullFileName);
-figure();
-imshow(Image, []);
+figure;imshow(Image, []);
 hold on;
 axis on;
-title('Input image', 'FontSize', 10);
+title('Image', 'FontSize', 10);
 message = sprintf(mesg);
 uiwait(msgbox(message));
 [xCoordinates, yCoordinates] = ginput();
+plot(xCoordinates, yCoordinates, 'rx', 'linewidth', 2);
 
 numberOfKnots = length(xCoordinates);
 % Close gaps that you get when you draw too fast.
@@ -26,16 +26,14 @@ smoothedY = ppval(pp, newXSamplePoints); % Get smoothed y values in the "gaps".
 SmoothedXCoordinates = smoothedY(1, :);
 SmoothedYCoordinates = smoothedY(2, :);
 % hold on; 
-% intSmoothedXCoordinates = int32(smoothedXCoordinates);
-% intSmoothedYCoordinates = int32(smoothedYCoordinates);
-diffX = [1, diff(SmoothedXCoordinates)];
-diffY = [1, diff(SmoothedYCoordinates)];
+intSmoothedXCoordinates = int32(SmoothedXCoordinates);
+intSmoothedYCoordinates = int32(SmoothedYCoordinates);
+diffX = [1, diff(intSmoothedXCoordinates)];
+diffY = [1, diff(intSmoothedYCoordinates)];
 % Find out where both have zero difference from the prior point.
 bothZero = (diffX==0) & (diffY == 0);
 finalX = SmoothedXCoordinates(~bothZero);
 finalY = SmoothedYCoordinates(~bothZero);
-plot(finalX,finalY,'r','linewidth',1);
-plot(xCoordinates, yCoordinates, 'rx', 'linewidth', 1.4);
-drawnow
+% plot(finalX, finalY, '-y');
 end
 
