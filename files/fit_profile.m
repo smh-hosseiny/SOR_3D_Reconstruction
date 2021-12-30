@@ -16,22 +16,11 @@ for i = linspace(lb,ub,len)
     b = cross(a,na);
     qc = K*center;
     qc = qc./qc(3,:);
-%     plot(qc(1),qc(2),'r.');
     [radius,~,~] = get_rval(p1,qc(2));
     radius = radius/1000;
     Points = center + radius*(a*cosd(j)+b*sind(j));
     qcircle = K*Points;
     qcircle = qcircle./repmat(qcircle(3,:),3,1);
-%     iter = 0;
-%     [~,xm,~] = get_rval(p1,qcircle(2,:));
-%     while (sum(qcircle(1,:)<xm, 'all') > 1 && (iter<50))
-%         radius = radius - 0.0001;
-%         Points = center + radius*(a*cosd(j)+b*sind(j));
-%         qcircle = K*Points;
-%         qcircle = qcircle./repmat(qcircle(3,:),3,1);
-%         [~,xm,~] = get_rval(p1,qcircle(2,:));
-%         iter = iter + 1;
-%     end
     
     h(counter) = i*dh;
     rh(counter) = radius;

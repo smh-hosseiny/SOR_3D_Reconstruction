@@ -1,7 +1,7 @@
-function [x_border ,y_border ,n,Pbase,p1,top_point] = get_border(xCoordinates, yCoordinates, K)
+function [x_border ,y_border ,n,Pbase,p1,top_point,best_theta,best_phi] = get_border(xCoordinates, yCoordinates,nrow, ncol,K)
 
 % Iniitialize
-[i, slope, top_point, m0]  = get_top(xCoordinates, yCoordinates);
+[i, top_point]  = get_top(xCoordinates, yCoordinates,nrow, ncol);
 
 warning off
 
@@ -9,28 +9,33 @@ warning off
 % [ly,lx] = splineInterp(ly, lx);
 % [ry,rx] = splineInterp(ry, rx);
 
+theta = linspace(0,pi,20); 
+phi = linspace(0,2*pi,40);  %list of places to search for first parameter       %list of places to search for second parameter
+[F,S] = ndgrid(theta, phi);
+fitresult = arrayfun(@(p1,p2) fittingfunction(p1,p2,lx,ly,rx,ry,K), F, S); %run a fitting on every pair fittingfunction(F(J,K), S(J,K))
+[~, minidx] = min(fitresult);
+best_theta = mean(F(minidx));
+best_phi = mean(S(minidx));
+
+
 x_border = [lx, rx];
 y_border = [ly, ry];
 
 % find symmetric line
-options = optimoptions('fmincon');
-options.Display = 'off';
-n = [m0 pi/2];
-max_iter = 2;
+n = [best_theta best_phi];
+max_iter = 3;
 for iter=1:max_iter
 %     fprintf('\t iter \t',iter);
-    n = find_plane(x_border,y_border,slope,K,n);
+    n = find_plane(lx,rx,ly,ry,K,n);
     [~, idx] = min(vecnorm([x_border;y_border] - [top_point(1);top_point(2)], 2,1));
-    [lx,ly,~,~] = resample_border(x_border,y_border,idx,250);
-    [xs,ys,top_point,slope] = get_symm_line(lx,ly,x_border,y_border,n,K);
+    [lx,ly,rx,ry] = resample_border(x_border,y_border,idx,250);
+    [xs,ys,top_point] = get_symm_line(lx,ly,x_border,y_border,n,K);
 end
-
-n = [cos(n(1))*sin(n(2));sin(n(1));cos(n(1))*cos(n(2))];
+n = [sin(n(1)) * cos(n(2));
+    sin(n(1)) * sin(n(2));
+    cos(n(1))];
+% n = [cos(n(1))*sin(n(2));sin(n(1));cos(n(1))*cos(n(2))];
 n = n/norm(n);
-
-% pol = polyfit(xs, ys, 1);
-% m = pol(1);
-% b = pol(2);
 
 plot(xs, ys, '--','color', 'c', 'linewidth',2);
 Pbase = K\[xs(1);ys(1);1];
