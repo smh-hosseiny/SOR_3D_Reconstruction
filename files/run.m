@@ -16,7 +16,7 @@ cy = nrow/2;
 K = [f 0 cx;0 f cy;0 0 1];
 dh = 0.01;
 
-[x,y,n,Pbase,p1,top_point] = get_border(xCoordinates, yCoordinates, K);
+[x,y,n,Pbase,p1,top_point] = get_border(xCoordinates, yCoordinates,nrow, ncol, K);
 hold on;
 plot(x,y,'r','linewidth',1);
 drawnow;
@@ -45,15 +45,14 @@ fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
 % project patterns
 fprintf('\nprojecting patterns ...');
 tic
-[imgq,~] = project_patterns(lb,ub,dh,profile,Pbase,na,a,b,Image,K);
-
+[I,~] = project_patterns(lb,ub,dh,profile,Pbase,na,a,b,Image,K);
 e = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
 
 % reconstructing 3D dome
 fprintf('\nreconstructing 3D dome ...');
 tic
-[X,Y,Z,C] = plot3D(lb, ub, profile, dh, imgq, n);
+[X,Y,Z,C] = plot3D(lb, ub, profile, dh, I, n);
 e = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
 
