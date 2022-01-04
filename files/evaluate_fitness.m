@@ -1,6 +1,11 @@
 function cost = evaluate_fitness(x,y,px,py,nrow,top_point,side)
 if strcmp(side, 'upper')
-cost = min(vecnorm([px;py]-[top_point(1);top_point(2)],1,1));
+    [~,idx] = min(vecnorm([x;y]-[top_point(1);top_point(2)]));
+    points = [x(idx-5:min(length(x),idx+5)); y(idx-5:min(length(x),idx+5))];
+    cost = 0;
+    for i=1:length(points)
+        cost = cost + min(vecnorm([px;py]-points(:,i),1,1));
+    end
 % cost = norm([px(1);py(1)] - [top_point(1);top_point(2)]);
 %       cost = abs(top_point(1) - min(py)) + heaviside(top_point(1) - min(py)) * 100;
 else

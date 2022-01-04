@@ -1,5 +1,5 @@
-function [RGB] = surface_projection(Image,n,Pbase,K,p1,lb,ub,dh,nrow,ncol,ang)
-
+function [RGB] = surface_projection(Image,n,Pbase,K,p1,lb,ub,dh,nrow,ncol,ang,f)
+fig = figure('visible','off');
 na = cross(n,[0;0;1])/norm(cross(n,[0;0;1]));
 Rna = axang2rotm([n' ang*pi/180]);
 na = Rna*na;
@@ -12,10 +12,7 @@ b = cross(a,na);
 counter = 1;
 for i = linspace(lb,ub,N)
     center = Pbase + i*dh*na;
-    qc = K*center;
-    qc = qc./qc(3,:);
-    [radius,~,~] = get_rval(p1,qc(2));
-    radius = radius/1000;
+    radius = find_radius(K, p1, center, a, b,f);
     h(counter) = i*dh;
     rh(counter) = radius;
     counter = counter+1;
@@ -26,7 +23,7 @@ height = linspace(min(h),max(h),100);
 radius = ppval(cs,height);
 profile = [height; radius];
 th = linspace(0,360,400);
-h = linspace(lb*dh,ub*dh,100);
+h = linspace(lb*dh,ub*dh,150);
 l = length(h);
 t = length(th);
 
@@ -56,11 +53,9 @@ m1 = reshape(P(1,:), [t, l]);
 m2 = reshape(P(2,:), [t, l]);
 m3 = reshape(P(3,:), [t, l]);
 
-
-figure('visible','off');
 surf(m1.',m2.',m3.', I,'FaceColor','texturemap','Edgecolor','none');
-view(2);
 axis equal;
+view(2);
 set(gca, 'Visible', 'off');
 set(gcf,'Color',[0 0 0]);
 F = getframe;
@@ -68,8 +63,7 @@ rgb = frame2im(F);
 rgb = flipud(rgb);
 rgb = get_reshaped_img(rgb);
 RGB = imresize(rgb, [nrow,ncol]);
-% RGB = get_surface_patterns(rgb,nrow,ncol,x,y,K,n);
-close;
+close(fig)
 end
 
 function ix = get_idx(i, limit)

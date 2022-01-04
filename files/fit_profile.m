@@ -1,4 +1,4 @@
-function [prh, na, a, b] = fit_profile(n, ang, Pbase, K, p1, lb, ub, dh)
+function [prh, na, a, b] = fit_profile(n, ang, Pbase, K, p1, lb, ub, dh,f)
 
 na = cross(n,[0;0;1])/norm(cross(n,[0;0;1]));
 Rna = axang2rotm([n' ang*pi/180]);
@@ -14,10 +14,7 @@ for i = linspace(lb,ub,len)
     j = 0:360;
     a = n;
     b = cross(a,na);
-    qc = K*center;
-    qc = qc./qc(3,:);
-    [radius,~,~] = get_rval(p1,qc(2));
-    radius = radius/1000;
+    radius = find_radius(K, p1, center, a, b,f);
     Points = center + radius*(a*cosd(j)+b*sind(j));
     qcircle = K*Points;
     qcircle = qcircle./repmat(qcircle(3,:),3,1);

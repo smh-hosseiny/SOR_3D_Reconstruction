@@ -1,7 +1,7 @@
 function [imgq, t] = project_patterns(lb,ub,dh,profile,Pbase,na,a,b,Image,K)
 row = size(Image,2);
 col = size(Image,1);
-h = linspace(lb*dh, ub*dh, 200);
+h = linspace(lb*dh, ub*dh, 300);
 l = length(h);
 
 th = 0:0.1:180;

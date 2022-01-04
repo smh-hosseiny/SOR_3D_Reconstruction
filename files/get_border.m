@@ -9,10 +9,11 @@ warning off
 % [ly,lx] = splineInterp(ly, lx);
 % [ry,rx] = splineInterp(ry, rx);
 
+% Initialize theta and phi
 theta = linspace(0,pi,20); 
-phi = linspace(0,2*pi,40);  %list of places to search for first parameter       %list of places to search for second parameter
+phi = linspace(0,2*pi,40);  
 [F,S] = ndgrid(theta, phi);
-fitresult = arrayfun(@(p1,p2) fittingfunction(p1,p2,lx,ly,rx,ry,K), F, S); %run a fitting on every pair fittingfunction(F(J,K), S(J,K))
+fitresult = arrayfun(@(p1,p2) fittingfunction(p1,p2,lx,ly,rx,ry,K), F, S); 
 [~, minidx] = min(fitresult);
 best_theta = mean(F(minidx));
 best_phi = mean(S(minidx));
@@ -25,7 +26,6 @@ y_border = [ly, ry];
 n = [best_theta best_phi];
 max_iter = 3;
 for iter=1:max_iter
-%     fprintf('\t iter \t',iter);
     n = find_plane(lx,rx,ly,ry,K,n);
     [~, idx] = min(vecnorm([x_border;y_border] - [top_point(1);top_point(2)], 2,1));
     [lx,ly,rx,ry] = resample_border(x_border,y_border,idx,250);
@@ -34,7 +34,6 @@ end
 n = [sin(n(1)) * cos(n(2));
     sin(n(1)) * sin(n(2));
     cos(n(1))];
-% n = [cos(n(1))*sin(n(2));sin(n(1));cos(n(1))*cos(n(2))];
 n = n/norm(n);
 
 plot(xs, ys, '--','color', 'c', 'linewidth',2);
@@ -59,8 +58,4 @@ Qs = Ps-Ps'*n*n;
 qs = K*Qs./Qs(3,:);
 xIntersection = qs(1);
 yIntersection = qs(2);
-% ps = -1/m;
-% yInt = -ps * x0 + y0;
-% xIntersection = (yInt - b) / (m - ps);
-% yIntersection = ps * xIntersection + yInt;
 end

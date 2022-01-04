@@ -3,8 +3,8 @@ function run(Image, point_cloud)
 nrow = size(Image, 1);
 ncol = size(Image, 2);
 
-message = ['Please locate some points on the borders of the object' ...
-' (around 15 points). When you are done press Enter.'];
+message = ['Please locate 10-15 points on the border of the object' ...
+' (starting from bottom left and ending at bottom right). When you are done press Enter.'];
 
 [xCoordinates, yCoordinates] = get_input(Image, message);
 %
@@ -28,7 +28,7 @@ fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
 % find angle
 fprintf('\nfinding best angle...');
 tic
-best_angle = find_angle(Image,nrow,s1,s2,n,reference,Pbase,K,p1,dh,top_point);
+best_angle = find_angle(Image,nrow,s1,s2,n,reference,Pbase,K,p1,dh,top_point,f);
 e = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
 
@@ -36,8 +36,8 @@ fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);
 %fit ellipse
 fprintf('\nfitting ellipses ...');
 tic
-[lb, ub] = get_range(n, best_angle, Pbase, K, p1, nrow, dh,top_point);
-[profile,na,a,b] = fit_profile(n, best_angle, Pbase, K, p1, lb, ub, dh);
+[lb, ub] = get_range(n, best_angle, Pbase, K, p1, nrow, dh,top_point, f);
+[profile,na,a,b] = fit_profile(n, best_angle, Pbase, K, p1, lb, ub, dh, f);
 axis equal;
 e = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e);

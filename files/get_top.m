@@ -24,9 +24,6 @@ xx = -1/slope*(yy-mean_y) + mean_x;
 
 p = InterX([x;y],[xx;yy]);
 [~,idx] = min(vecnorm([x;y] - repmat([p(1); p(2)], [1,length(y)])));
-% range = [p, [mean_x; mean_y]];
-% initial_m = atan((p(2)-mean_y)/(p(1)-mean_x));
 top_point = p(:,end);
-% m0 = atan(abs((p(2,end)-mean_y)/(p(1,end)-mean_x)));
 
 end

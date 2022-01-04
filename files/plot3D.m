@@ -7,7 +7,7 @@ function [x,y,z,imgtt] = plot3D(lb, ub, prh, dh, Img, n)
     [x,y,~] = cylinder(rh,size(imgtt,2)-1);
     z = repmat(h',1,size(imgtt,2));
     figure;
-    surf(x,y,z,imgtt,'FaceColor','texturemap','Edgecolor','none');
+    surf(10*x,10*y,10*z,imgtt,'FaceColor','texturemap','Edgecolor','none');
     if n(1) < 0
         set(gca,'xdir','reverse');
         set(gca, 'Zdir', 'reverse');
