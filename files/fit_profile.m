@@ -28,7 +28,6 @@ for i = linspace(lb,ub,len)
         plot(rotated_p(1,:), rotated_p(2,:),'g', 'linewidth',0.5);
         drawnow
     end
-
     if i==lb
         [~, idx] = min(vecnorm([qcircle(1,:); qcircle(2,:)] - bot_point'));
         if idx < 180

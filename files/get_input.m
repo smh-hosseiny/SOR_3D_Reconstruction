@@ -13,13 +13,19 @@ end
 
 CH = bwconvhull(boundaries);
 orientation = regionprops(logical(CH), 'Orientation').Orientation;
-if orientation > -95 && orientation < -85
-    orientation = -orientation;
-end
+% if orientation > -95 && orientation < -85
+%     orientation = -orientation;
+% end
+
 %% get top point
 boundaryPoints = [x, y];
 % Rotate the boundary points
-theta = orientation-90;
+if orientation < 0
+    theta = orientation+90;
+else
+    theta = orientation-90;
+end
+
 R = [cosd(theta) -sind(theta); sind(theta) cosd(theta)];
 rotatedPoints = (R * boundaryPoints')';
 % Find the centroid of the rotated points
@@ -39,13 +45,16 @@ botPoint = [rotatedCenter(1), botPointRotated];
 topPoint = min(topPoint, botPoint);
 
 %%
-if orientation>0
-    leftPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
-    rightPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
-else
-    rightPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
-    leftPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
-end
+leftPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
+rightPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
+
+% if orientation<0
+%     leftPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
+%     rightPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
+% else
+%     rightPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
+%     leftPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
+% end
 
 
 

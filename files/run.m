@@ -1,5 +1,5 @@
 function run(img_dir, point_cloud)
-% img_dir = '/Users/seyedhosseini/Downloads/T I/0024.JPG';
+% img_dir = '/Users/seyedhosseini/Downloads/T I/13.JPG';
 
 output_dir = pwd;
 [~, imgName, imgExt] = fileparts(img_dir);
@@ -16,10 +16,6 @@ Image = imread(img_dir);
 nrow = size(Image, 1);
 ncol = size(Image, 2);
 %%
-% hsvImage = rgb2hsv(new_img);
-% e = edge(hsvImage(:, :, 3), 'sobel');
-% imshow(e)
-%%
 boundaries = bwperim(mask);
 [lx,ly,rx,ry,top_point,R] = get_input(boundaries);
 
@@ -27,7 +23,7 @@ boundaries = bwperim(mask);
 %%
 fprintf('\ninitializing ...');
 tic
-field_of_view = 24;
+field_of_view = 26;
 f = size(Image,2)/(2 * tand(field_of_view/2));
 cx = ncol/2;
 cy = nrow/2;

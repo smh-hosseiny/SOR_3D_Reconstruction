@@ -1,9 +1,6 @@
 function loss = computeVisualLoss(ang, n, Pbase, K, p1, nrow, dh, top_point,bot_point,f, reference)
     [lb, ub] = get_range(n, ang, Pbase, K, p1, nrow, dh,top_point,bot_point,f);
-    range = ub - lb;
-    new_lb = lb + 0.05*range;
-    new_ub = ub - 0.05*range;
-    [RGB,I] = surface_projection(reference, n, Pbase, K, p1, new_lb, new_ub, dh, size(reference, 1), size(reference, 2), ang, f);
+    [RGB,I] = surface_projection(reference, n, Pbase, K, p1, lb, ub, dh, size(reference, 1), size(reference, 2), ang, f);
     
     lambda = 0.1;
     

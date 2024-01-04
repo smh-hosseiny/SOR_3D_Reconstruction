@@ -6,7 +6,7 @@ na = Rna*na;
 
 options = optimoptions('fmincon');
 options.Display = 'off';
-options.MaxFunctionEvaluations = 10000;
+options.MaxFunctionEvaluations = 1000;
 
 
 lb = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, nrow, bot_point,f,'bot'), ...
@@ -18,8 +18,8 @@ ub = fmincon(@(i) Cost(i, Pbase, dh, na, n, K, p1, nrow, top_point,f,'top'),...
 
 
 range = ub - lb;
-lb = lb + 0.025*range;
-ub = ub - 0.025*range;
+lb = lb + 0.02*range;
+ub = ub - 0.02*range;
 
 
 end
