@@ -1,14 +1,13 @@
-function [RGB] = surface_projection(Image,n,Pbase,K,p1,lb,ub,dh,nrow,ncol,ang,f)
+function [RGB, Image] = surface_projection(Image,n,Pbase,K,p1,lb,ub,dh,nrow,ncol,ang,f)
 fig = figure('visible','off');
 na = cross(n,[0;0;1])/norm(cross(n,[0;0;1]));
 Rna = axang2rotm([n' ang*pi/180]);
 na = Rna*na;
-N = 20;
-rh = zeros(1, N);
-h = zeros(1, N);
+N = 50;
+rh = zeros(1,N);
+h = zeros(1,N);
 a = n;
 b = cross(a,na);
-
 counter = 1;
 for i = linspace(lb,ub,N)
     center = Pbase + i*dh*na;
@@ -18,12 +17,18 @@ for i = linspace(lb,ub,N)
     counter = counter+1;
 end
 
-cs = spline(h,[0 rh 0]);
+
+[~, idx] = unique(h);
+
+if length(idx) < 2 
+    return 
+end
+
+cs = spline(h(idx),[0 rh(idx) 0]);
 height = linspace(min(h),max(h),100);
 radius = ppval(cs,height);
-profile = [height; radius];
 th = linspace(0,360,400);
-h = linspace(lb*dh,ub*dh,150);
+h = linspace(lb*dh,ub*dh,200);
 l = length(h);
 t = length(th);
 
@@ -61,8 +66,9 @@ set(gcf,'Color',[0 0 0]);
 F = getframe;
 rgb = frame2im(F);
 rgb = flipud(rgb);
-rgb = get_reshaped_img(rgb);
-RGB = imresize(rgb, [nrow,ncol]);
+Image = get_reshaped_img(Image);
+RGB = imresize(rgb, size(Image,[1,2]));
+
 close(fig)
 end
 

@@ -1,39 +1,63 @@
+function [lx,ly,rx,ry,topPoint,R] = get_input(boundaries)
 
-function [finalX, finalY] = get_input(Image,mesg)
 
-workspace;  
-samplingRateIncrease = 20;
-% Image = imread(fullFileName);
-figure;imshow(Image, []);
-hold on;
-axis on;
-title('Image', 'FontSize', 10);
-message = sprintf(mesg);
-uiwait(msgbox(message));
-[xCoordinates, yCoordinates] = ginput();
-plot(xCoordinates, yCoordinates, 'rx', 'linewidth', 2);
+[y,x] = find(boundaries);
 
-numberOfKnots = length(xCoordinates);
-% Close gaps that you get when you draw too fast.
-% Use splines to interpolate a smoother curve,
-% that goes exactly through the same data points.
+x = movmedian(double(x), 5);
+y = movmedian(double(y), 5);
 
-newXSamplePoints = linspace(1, numberOfKnots, numberOfKnots * samplingRateIncrease);
-% smoothedY = spline(xCoordinates, yCoordinates, newXSamplePoints);
-yy = [0, xCoordinates', 0; 1, yCoordinates', 1];
-pp = spline(1:numberOfKnots, yy); % Get interpolant
-smoothedY = ppval(pp, newXSamplePoints); % Get smoothed y values in the "gaps".
-SmoothedXCoordinates = smoothedY(1, :);
-SmoothedYCoordinates = smoothedY(2, :);
-% hold on; 
-intSmoothedXCoordinates = int32(SmoothedXCoordinates);
-intSmoothedYCoordinates = int32(SmoothedYCoordinates);
-diffX = [1, diff(intSmoothedXCoordinates)];
-diffY = [1, diff(intSmoothedYCoordinates)];
-% Find out where both have zero difference from the prior point.
-bothZero = (diffX==0) & (diffY == 0);
-finalX = SmoothedXCoordinates(~bothZero);
-finalY = SmoothedYCoordinates(~bothZero);
-% plot(finalX, finalY, '-y');
+while length(x) > 3000
+    x = x(1:2:end);
+    y = y(1:2:end);
 end
+
+CH = bwconvhull(boundaries);
+orientation = regionprops(logical(CH), 'Orientation').Orientation;
+if orientation > -95 && orientation < -85
+    orientation = -orientation;
+end
+%% get top point
+boundaryPoints = [x, y];
+% Rotate the boundary points
+theta = orientation-90;
+R = [cosd(theta) -sind(theta); sind(theta) cosd(theta)];
+rotatedPoints = (R * boundaryPoints')';
+% Find the centroid of the rotated points
+rotatedCenter = mean(rotatedPoints);
+% Find the top point in the rotated coordinate system
+[topPointRotated, top_idx] = min(rotatedPoints(:, 2));
+% Combine the x-coordinate of the centroid and the y-coordinate of the top point
+topPoint = [rotatedCenter(1), topPointRotated];
+% Rotate the top point back to the original coordinate system
+% topPoint = (R' * topPoint')';
+
+% get bottom point
+[botPointRotated, bot_idx] = max(rotatedPoints(:, 2));
+botPoint = [rotatedCenter(1), botPointRotated];
+% botPoint = (R' * botPoint')';
+
+topPoint = min(topPoint, botPoint);
+
+%%
+if orientation>0
+    leftPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
+    rightPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
+else
+    rightPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
+    leftPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
+end
+
+
+
+
+lx = leftPoints(:,1)';
+ly = leftPoints(:,2)';
+rx = flipud(rightPoints(:,1))';
+ry = flipud(rightPoints(:,2))';
+
+
+
+
+
+
 

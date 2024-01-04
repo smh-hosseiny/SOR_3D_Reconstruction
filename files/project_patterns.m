@@ -1,10 +1,10 @@
-function [imgq, t] = project_patterns(lb,ub,dh,profile,Pbase,na,a,b,Image,K)
+function [imgq] = project_patterns(lb,ub,dh,profile,Pbase,na,a,b,Image,K,front_angle,R)
 row = size(Image,2);
 col = size(Image,1);
-h = linspace(lb*dh, ub*dh, 300);
+h = linspace(lb*dh, ub*dh, 500);
 l = length(h);
 
-th = 0:0.1:180;
+th = front_angle;
 t = length(th);
 P = [];
 for hq = h
@@ -13,15 +13,17 @@ for hq = h
 end
 q = K*P;
 q = bsxfun(@rdivide, q, q(3,:));
+q = R' * q(1:2,:);
 imgq = uint8(zeros(l,t,3));
 for i = 1:l
     for j = 1:length(th)
-        imgq(i,j,:) = Image(get_idx(2,i,j,col), get_idx(1,i,j,row), :);
+        imgq(i,j,:) = Image(get_idx(2,i,j,col), get_idx(1,i,j,row),:);
     end
 end
 
-shift = floor(size(imgq,2)/11);
-imgq = imgq(:,shift:end-shift,:);
+
+% shift = floor(size(imgq,2)/11);
+% imgq = imgq(:,shift:end-shift,:);
 
 
 function ix = get_idx(idx,i,j,limit)

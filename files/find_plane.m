@@ -2,7 +2,7 @@ function N = find_plane(lx,rx,ly,ry,K,x0)
 
 options = optimoptions('fminunc');
 options.Display = 'off';
-options.MaxFunEvals = 800;
+options.MaxFunEvals = 1000;
 N = fminunc(@(N) cost(N,lx,rx,ly,ry,K),[x0(1) x0(2)],options);
 
 end
