@@ -3,8 +3,8 @@ function [lx,ly,rx,ry,topPoint,R] = get_input(boundaries)
 
 [y,x] = find(boundaries);
 
-x = movmedian(double(x), 5);
-y = movmedian(double(y), 5);
+% x = movmedian(double(x), 5);
+% y = movmedian(double(y), 5);
 
 while length(x) > 3000
     x = x(1:2:end);

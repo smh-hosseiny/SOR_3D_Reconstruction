@@ -1,6 +1,5 @@
 function GUI
     addpath('files/');
-    clc; clear;
     image = imread('files/TheDome.jpg');
 
     f = figure('Visible', 'off', 'Position', [360, 500, 300, 230], 'NumberTitle', 'off', 'Resize', 'on');
@@ -50,8 +49,7 @@ end
 function Runbutton_Callback(source,eventdata)
     global selectedfile;
     global point_cloud;
-    
     close;
     run(selectedfile, point_cloud);
-    GUI;
+    GUI;    
 end
