@@ -51,7 +51,7 @@ The program is implemented in _[Matlab](https://www.mathworks.com/)_, run the pr
 Firstly, user is asked to locate some points on the boundaries of the SOR in order to obtain the contours of the object, as shown below. Subsequently, the algorithm will reconstruct the 3D model automatically.
 
 <p align="center">
-    <img src="Figures/border.JPG" alt="Logo" width="360" height="220">
+    <img src="Figures/input_border.png" alt="Logo" width="360" height="220">
 </p>
 
 
