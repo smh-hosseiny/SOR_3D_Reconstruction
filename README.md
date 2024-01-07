@@ -23,12 +23,12 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-3D reconstruction from a single 2D image is a classical problem in computer vision that tries to retrieve the shape and structure of the actual body using its 2D image. We developed a program to reconstruct the 3D model of Surface of Revolution (SOR) using a single image. The proposed method solves an optimization problem to find the best 3D axis of rotational symmetry such that the projection of the 3D body fits the 2D input image. Moreover, we introduce a method for texture acquisition from a single image of SORs to create a more realistic 3D model. We implemented a user-friendly graphical user interface (GUI) in Matlab to facilitate using the program. Our main contributions:
+3D reconstruction from a single 2D image is a classic problem in computer vision, aiming to recover the shape and structure of an object from its 2D representation. Our project focuses on the reconstruction of the 3D model of a Surface of Revolution (SOR) using a single image. The proposed method tackles an optimization problem to determine the optimal 3D axis of rotational symmetry, aligning the projection of the 3D body with the input 2D image. Additionally, we introduce a novel approach for texture acquisition from a single image of SORs, enhancing the realism of the generated 3D model. Our main contributions:
 * Generating the 3D model of any SOR
 * Projecting surface patterns on the 3D model
 
 The main steps to generate the 3D model:
-1. Finding borders of the object
+1. Detecting the object boundaries in the input image
 2. Computing the plane that contains the 3D axis
 3. Obtaining the precise 3D axis
 4. Generating the 3D model
@@ -48,7 +48,15 @@ The program is implemented in _[Matlab](https://www.mathworks.com/)_, run the pr
     <img src="Figures/GUI.JPG" alt="Logo" width="220" height="220">
 </p>
 
-Firstly, user is asked to locate some points on the boundaries of the SOR in order to obtain the contours of the object, as shown below. Subsequently, the algorithm will reconstruct the 3D model automatically.
+Process Overview:
+
+1. Background Removal:
+The initial step involves removing the background from the input image, utilizing a salient object detection algorithm, U2-Net \cite{Qin2020U2NetGD}.
+This process effectively isolates the object in the image, enabling clearer identification of its boundaries.
+2. Automatic 3D Model Reconstruction:
+The algorithm proceeds to automatically reconstruct the 3D model of the object.
+Leveraging the detected outlines and utilizing an optimization approach, the algorithm determines the optimal 3D axis of rotational symmetry.
+The calculated 3D axis is then employed to generate the complete 3D model of the object.
 
 <p align="center">
     <img src="Figures/input_border.png" alt="Logo" width="360" height="220">
