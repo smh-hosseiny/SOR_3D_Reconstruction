@@ -59,7 +59,7 @@ Leveraging the detected outlines and utilizing an optimization approach, the alg
 The calculated 3D axis is then employed to generate the complete 3D model of the object.
 
 <p align="center">
-    <img src="Figures/input_border.png" alt="Logo" width="360" height="220">
+    <img src="Figures/input_border.png" alt="Logo" width="360" height="200">
 </p>
 
 
