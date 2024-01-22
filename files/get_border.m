@@ -3,9 +3,6 @@ function [x_border,y_border,n,Pbase,p1,top_point,bot_point] = get_border(lx,ly,r
 % Iniitialize
 warning off
 
-% [lx,ly,rx,ry] = resample_border(lx,ly,rx,ry,250);
-% [ly,lx] = splineInterp(ly, lx);
-% [ry,rx] = splineInterp(ry, rx);
 
 theta = linspace(0,pi,20); 
 phi = linspace(0,2*pi,40);  %list of places to search for first parameter       %list of places to search for second parameter
@@ -21,7 +18,7 @@ y_border = [ly, ry];
 
 % find symmetric line
 n = [best_theta best_phi];
-max_iter = 4;
+max_iter = 3;
 for iter=1:max_iter
 %     fprintf('\t iter \t',iter);
     n = find_plane(lx,rx,ly,ry,K,n);
@@ -49,27 +46,3 @@ p1 = [ys; vecnorm([xs;ys] - [lx;ly], 2, 1); ly; lx];
 [~, unique_idx, ~] = unique(p1(1, :));
 p1 = p1(:, unique_idx);
 
-
-% p1 = [];
-% for i=1:length(lx)
-%     [lxInter, lyInter] = project(lx(i),ly(i),n,K);
-%     l_radius = norm([lx(i), ly(i)]-[lxInter, lyInter]);
-%     p1 = [p1, [lyInter; l_radius; ly(i); lx(i)]];  
-% end
-% valid_idx = diff(p1(1,:))~=0;
-% p1 = p1(:,valid_idx);
-% 
-% end
-% 
-% 
-% function [xIntersection, yIntersection] = project(x0,y0,n,K)
-% Ps = K\[x0;y0;1];
-% Qs = Ps-Ps'*n*n;
-% qs = K*Qs./Qs(3,:);
-% xIntersection = qs(1);
-% yIntersection = qs(2);
-% % ps = -1/m;
-% % yInt = -ps * x0 + y0;
-% % xIntersection = (yInt - b) / (m - ps);
-% % yIntersection = ps * xIntersection + yInt;
-% end

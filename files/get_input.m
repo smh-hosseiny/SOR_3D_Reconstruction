@@ -57,8 +57,6 @@ rightPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
 % end
 
 
-
-
 lx = leftPoints(:,1)';
 ly = leftPoints(:,2)';
 rx = flipud(rightPoints(:,1))';

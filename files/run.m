@@ -1,17 +1,15 @@
-function run(img_dir, point_cloud)
+function run(img_dir, point_cloud, out_folder)
 tic
-output_dir = pwd;
+
 [~, imgName, imgExt] = fileparts(img_dir);
 
-command = sprintf('Functions/remove_bg.py "%s" "%s"', img_dir, output_dir);
+command = sprintf('remove_bg.py "%s" "%s"', img_dir, out_folder(1:end-1));
 pyrunfile(command);
 e1 = toc;
 %%
-img_name = sprintf("%s/%s_no_bg%s"', output_dir,imgName,imgExt);
+img_name = sprintf("%s/%s_mask%s"', out_folder,imgName,imgExt);
 mask = imread(img_name);
 mask = im2bw(mask); 
-
-%%
 Image = imread(img_dir);
 nrow = size(Image, 1);
 ncol = size(Image, 2);
@@ -20,11 +18,10 @@ tic
 boundaries = bwperim(mask);
 [lx,ly,rx,ry,top_point,R] = get_input(boundaries);
 
-
-%%
+%
 fprintf('\ninitializing ...');
 
-field_of_view = 36;
+field_of_view = 40;
 f = size(Image,2)/(2 * tand(field_of_view/2));
 cx = ncol/2;
 cy = nrow/2;
@@ -41,56 +38,60 @@ drawnow;
 e2 = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e2);
 title('Detected boundary and symmetry line');
-% [reference, s1, s2] = get_surface_patterns(Image,nrow,ncol,p1,K,n);
-reference = uint8(mask .* double(Image));
+
+
+x_1 = min(rotated_p(:,1));
+x_2 = max(rotated_p(:,1));
+y_1 = min(rotated_p(:,2));
+y_2 = max(rotated_p(:,2));
+masked = uint8(mask .* double(Image));
+reference = imcrop(masked, [min(x_1,x_2), min(y_1,y_2), abs(x_2 - x_1), abs(y_2 - y_1)]);
 
 %% find angle
 fprintf('\nfinding best angle...');
 tic
-best_angle = find_angle(nrow,n,reference,Pbase,K,p1,dh,top_point,bot_point,f,R);
+best_angle = find_angle(nrow,n,reference,masked,Pbase,K,p1,dh,top_point,bot_point,f,R);
 e3 = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e3);
 
 
-%% fit ellipse
+%% reconstructing 3D dome
 fprintf('\nfitting ellipses ...');
 tic
-[lb, ub] = get_range(n, best_angle, Pbase, K, p1, nrow, dh,top_point,bot_point,f);
-[profile,na,a,b,front_angle] = fit_profile(n, best_angle, Pbase, K, p1, lb, ub, dh, f,bot_point, R);
+[lb, ub] = get_range(n, best_angle, Pbase, K, p1, nrow, dh,top_point,bot_point,f,2000);
+% [profile,na,a,b,front_angle] = fit_profile(n, best_angle, Pbase, K, p1, lb, ub, dh, f,bot_point, R);
+[surface_patterns, profile] = fit_profile(Image,n, best_angle, Pbase, K, p1, lb, ub, dh,f,bot_point,R);
+ 
 axis equal;
 title('Detected boundary and symmetry line + 2D profile');
 e4 = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e4);
+saveas(gcf, strcat(out_folder, imgName, '_2D_profile.jpg'));
 
-%% project patterns
-fprintf('\nprojecting patterns ...');
-tic
-pattern = project_patterns(lb,ub,dh,profile,Pbase,na,a,b,Image,K,front_angle,R);
+%% Visualization
+tic 
+
+[x,y,z,C] = plot3D(lb, ub, profile, dh, surface_patterns);
+
+xyz = cat(3, x,y,z);
+ptCloud = pointCloud(xyz, 'Color',C);
+figure; pcshow(ptCloud, 'ViewPlane', 'XZ'); 
+toc
+title('3D Point cloud');
+view(0, 10);
+
+% Set axis labels
+xlabel('X-axis');
+ylabel('Y-axis');
+zlabel('Z-axis');
+grid on;
+
+if point_cloud == 1
+    pcwrite(ptCloud, strcat(out_folder, imgName, '_3D_obj.ply'));
+end
+
 e5 = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e5);
-
-
-%% reconstructing 3D dome
-fprintf('\nreconstructing 3D dome ...');
-tic
-[X,Y,Z,C] = plot3D(lb, ub, profile, dh, pattern, n);
-
-
-xyz = cat(3, X,Y,Z);
-ptCloud = pointCloud(xyz, 'Color',C);
-figure; pcshow(ptCloud); title('3D Point cloud');
-if ismember(181, front_angle)
-    view(180, 15);
-else
-    view(0, 15);
-end
-if point_cloud == 1
-    pcwrite(ptCloud,'object3d.ply');
-end
-
-e6 = toc;
-fprintf('\t\t done! \t Elapsed time: %.2fs \n',e6);
-delete(img_name);
-fprintf('\tTotal runtume: %.2fs \n',e1+e2+e3+e4+e5+e6);
+fprintf('\tTotal runtume: %.2fs \n',e1+e2+e3+e4+e5);
 
 end

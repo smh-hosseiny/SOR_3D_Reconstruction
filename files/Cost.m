@@ -1,7 +1,7 @@
 function err = Cost(i, Pbase, dh, na, n, K, p1, nrow,extremum,f,side)
 center = Pbase + i*dh*na;
 normal = na;
-j = 0:360;
+j = 0:10:360;
 a = n;
 b = cross(a,normal);
 radius = find_radius(K, p1, center, a, b, f);

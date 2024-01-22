@@ -50,6 +50,6 @@ function Runbutton_Callback(source,eventdata)
     global selectedfile;
     global point_cloud;
     close;
-    run(selectedfile, point_cloud);
+    reconstruct_3D(selectedfile, point_cloud, [])
     GUI;    
 end

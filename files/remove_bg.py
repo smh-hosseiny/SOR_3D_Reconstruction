@@ -1,4 +1,3 @@
-
 import sys
 from PIL import Image
 import os
@@ -29,7 +28,7 @@ def remove_bg():
     # Construct the output image path
     img_name = os.path.basename(img_path)
     img_name_no_ext, img_ext = os.path.splitext(img_name)
-    output_img_path = os.path.join(output_dir, f"{img_name_no_ext}_no_bg{img_ext}")
+    output_img_path = os.path.join(output_dir, f"{img_name_no_ext}_mask{img_ext}")
     print(output_img_path)
     # Save the output image
     binary_mask_pil.save(output_img_path)

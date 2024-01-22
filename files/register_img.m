@@ -1,15 +1,9 @@
-function [registeredImage] = register_img(image1,image2)
-grayImage1 = rgb2gray(image1);
-grayImage2 = rgb2gray(image2);
+function [registeredImage] = register_img(grayImage1,grayImage2)
 
-% Ensure both images have the same size
-if ~isequal(size(grayImage1), size(grayImage2))
-    grayImage2 = imresize(grayImage2, size(grayImage1));
-end
 
 % Create SIFT feature point object
-points1 = detectSURFFeatures(grayImage1);
-points2 = detectSURFFeatures(grayImage2);
+points1 = detectSURFFeatures(grayImage1, 'MetricThreshold', 50);
+points2 = detectSURFFeatures(grayImage2, 'MetricThreshold', 50);
 
 % Extract SIFT features
 [features1, validPoints1] = extractFeatures(grayImage1, points1);
@@ -26,6 +20,6 @@ matchedPoints2 = validPoints2(indexPairs(:, 2));
 tform = estgeotform2d(matchedPoints2, matchedPoints1, 'rigid');
 
 % Apply transformation to one image
-registeredImage = imwarp(image2, tform, 'OutputView', imref2d(size(grayImage1)));
+registeredImage = imwarp(grayImage2, tform, 'OutputView', imref2d(size(grayImage1)));
 
 end
