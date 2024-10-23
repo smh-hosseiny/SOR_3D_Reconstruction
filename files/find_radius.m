@@ -11,6 +11,8 @@ options.Display = 'off';
 options.MaxFunEvals = 150;
 radius = fminunc(@(r) cost(r,x,y,center,a,b,K),r0, options);
 
+% radius=fminsearchbnd(@(r) cost(r,x,y,center,a,b,K), r0, 0, 0.1);
+
 end
 
 

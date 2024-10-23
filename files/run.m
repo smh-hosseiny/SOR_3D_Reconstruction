@@ -21,11 +21,13 @@ boundaries = bwperim(mask);
 %
 fprintf('\ninitializing ...');
 
-field_of_view = 40;
-f = size(Image,2)/(2 * tand(field_of_view/2));
+% field_of_view = 40;
+% f = size(Image,2)/(2 * tand(field_of_view/2));
+f = 500;
 cx = ncol/2;
 cy = nrow/2;
 K = [f 0 cx;0 f cy;0 0 1];
+
 dh = 0.01;
 figure;
 imshow(Image);
@@ -50,10 +52,26 @@ reference = imcrop(masked, [min(x_1,x_2), min(y_1,y_2), abs(x_2 - x_1), abs(y_2 
 %% find angle
 fprintf('\nfinding best angle...');
 tic
-best_angle = find_angle(nrow,n,reference,masked,Pbase,K,p1,dh,top_point,bot_point,f,R);
+% best_angle = 0;
+try
+    best_angle = find_angle(nrow, n, reference, masked, Pbase, K,p1, dh, top_point, bot_point, f, R);
+catch
+    warning('An error occurred while finding the best angle. Using 0 as the best angle.');
+    best_angle = 0;
+end
 e3 = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e3);
 
+%%
+fprintf('\nfinding best focal length...');
+tic
+
+best_focal = optimizeFocal(nrow, n, reference, masked, Pbase, K, p1, dh, top_point, bot_point, R, best_angle);
+dh = dh * (f/best_focal);
+f = best_focal;
+
+e6 = toc;
+fprintf('\t\t done! \t Elapsed time: %.2fs \n',e6);
 
 %% reconstructing 3D dome
 fprintf('\nfitting ellipses ...');
@@ -62,11 +80,11 @@ tic
 % [profile,na,a,b,front_angle] = fit_profile(n, best_angle, Pbase, K, p1, lb, ub, dh, f,bot_point, R);
 [surface_patterns, profile] = fit_profile(Image,n, best_angle, Pbase, K, p1, lb, ub, dh,f,bot_point,R);
  
-axis equal;
-title('Detected boundary and symmetry line + 2D profile');
+% axis equal;
+% title('Detected boundary and symmetry line + 2D profile');
 e4 = toc;
 fprintf('\t\t done! \t Elapsed time: %.2fs \n',e4);
-saveas(gcf, strcat(out_folder, imgName, '_2D_profile.jpg'));
+% saveas(gcf, strcat(out_folder, imgName, '_2D_profile.jpg'));
 
 %% Visualization
 tic 
@@ -81,9 +99,9 @@ title('3D Point cloud');
 view(0, 10);
 
 % Set axis labels
-xlabel('X-axis');
-ylabel('Y-axis');
-zlabel('Z-axis');
+xlabel('X (centimeters)');
+ylabel('Y (centimeters)');
+zlabel('Z (centimeters)');
 grid on;
 
 if point_cloud == 1

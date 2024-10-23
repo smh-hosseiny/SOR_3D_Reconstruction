@@ -9,6 +9,9 @@ function [x,y,z,imgtt] = plot3D(lb, ub, prh, dh, Img)
     rh = interp1(prh(1,:), prh(2,:),h,'linear');
     [x,y,~] = cylinder(rh,size(imgtt,2)-1);
     z = repmat(h',1,size(imgtt,2));
+    x = 100 * x;
+    y = 100 * y;
+    z = 100 * z;
     % figure;
     % surf(10*x,10*y,10*z,imgtt,'FaceColor','texturemap','Edgecolor','none');
     % if n(1) < 0

@@ -1,15 +1,17 @@
-function [interp_rgb] = surface_projection(Image,ref,R,n,Pbase,K,p1,lb,ub,dh,bot_point,ang,f)
+function [interp_rgb, status] = surface_projection(Image,ref,R,n,Pbase,K,p1,lb,ub,dh,bot_point,ang,f)
 % fig = figure('visible','off');
+status = 0;
 [row col] = size(Image);
 na = cross(n,[0;0;1])/norm(cross(n,[0;0;1]));
 Rna = axang2rotm([n' ang*pi/180]);
 na = Rna*na;
-N = 20;
+N = 32;
 rh = zeros(1,N);
 h = zeros(1,N);
 a = n;
 b = cross(a,na);
 counter = 1;
+
 
 for i = linspace(lb,ub,N)
     center = Pbase + i*dh*na;
@@ -19,21 +21,28 @@ for i = linspace(lb,ub,N)
     counter = counter+1;
 end
 
-
 [~, idx] = unique(h);
 
 if length(idx) < 2 
+    interp_rgb = [];
+    status = 1;
     return 
 end
 
+if abs(min(h) - max(h)) < 0.1
+    height = linspace(min(h), max(h)+ rand(1)*1e-1, 20);
+else
+    height = linspace(min(h), max(h), 20);
+end
+
 cs = spline(h(idx),[0 rh(idx) 0]);
-height = linspace(min(h),max(h),20);
 radius = ppval(cs,height);
 
 % find the theta range
 size_ = 64;
 
 hq = lb * dh;
+
 rq = interp1(height,radius,hq,'linear');
 Points = (Pbase + hq*na + rq*(a*cosd(1:60:360)+b*sind(1:60:360)));
 qcircle = K*Points;
@@ -64,10 +73,7 @@ for hq = h
     cnt = cnt+1;
 end
 
-% x = idx(1,:);
-% y = idx(2,:);
-% [X, Y] = meshgrid(linspace(min(x), max(x), 40), linspace(min(y), max(y), 40));
-% interp_rgb = interp2(Image', Y, X);
+
 
 interp_rgb = flipud((imresize(surface_patterns, size(ref,[1,2]))));
 

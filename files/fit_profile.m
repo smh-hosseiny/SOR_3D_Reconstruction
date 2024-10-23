@@ -17,18 +17,18 @@ function [surface_patterns, profile] = fit_profile(Image,n, ang, Pbase, K,...
     th = linspace(0, 360, 2*w);
     counter = 1;
     % find angle range that captures surface patterns.
-    center = Pbase + lb*dh*na;
-    th0 = 0:60:360;
-    radius = find_radius(K, p1, center, a, b,f);
-    Points = center + radius*(a*cosd(th0)+b*sind(th0));
-    qcircle = K*Points;
-    qcircle = qcircle./repmat(qcircle(3,:),3,1);
-    [~, idx] = min(vecnorm([qcircle(1,:); qcircle(2,:)] - bot_point'));
-    if idx < 180
-        front_angle = 1:w;
-    else
-        front_angle = w+1:2*w;
-    end
+    % center = Pbase + lb*dh*na;
+    % th0 = 0:60:360;
+    % radius = find_radius(K, p1, center, a, b,f);
+    % Points = center + radius*(a*cosd(th0)+b*sind(th0));
+    % qcircle = K*Points;
+    % qcircle = qcircle./repmat(qcircle(3,:),3,1);
+    % [t, ~] = min(vecnorm([qcircle(1,:); qcircle(2,:)] - bot_point'));
+    % if t < 180
+    %     front_angle = 1:w;
+    % else
+    %     front_angle = w+1:2*w;
+    % end
     
     surface_patterns = uint8(zeros(h,w,3));
     
@@ -43,6 +43,14 @@ function [surface_patterns, profile] = fit_profile(Image,n, ang, Pbase, K,...
         % P = [P, Points];
         qcircle = K*Points;
         qcircle = qcircle./repmat(qcircle(3,:),3,1);
+
+        [t, ~] = min(vecnorm([qcircle(1,:); qcircle(2,:)] - bot_point'));
+        if t < 180
+            front_angle = 1:w;
+        else
+            front_angle = w+1:2*w;
+        end
+
         rotated_p = R' * qcircle(1:2,:);
         q = rotated_p(:, front_angle);
         hold on;
