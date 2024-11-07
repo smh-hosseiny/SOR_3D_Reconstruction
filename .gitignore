@@ -1,0 +1,9 @@
+# Image files
+*.jpg
+*.png
+
+# Autosave files
+*.asv
+
+# MATLAB files
+*.mat

@@ -1,4 +1,4 @@
-function [x_border,y_border,n,Pbase,p1,top_point,bot_point] = get_border(lx,ly,rx,ry,top_point,K,R)
+function [x_border,y_border,n,Pbase,p1,top_point,bot_point,xs,ys] = get_border(lx,ly,rx,ry,top_point,K,R)
 
 % Iniitialize
 warning off
@@ -32,14 +32,14 @@ n = [sin(n(1)) * cos(n(2));
     cos(n(1))];
 % n = [cos(n(1))*sin(n(2));sin(n(1));cos(n(1))*cos(n(2))];
 n = n/norm(n);
-rotated_p = (R' * [xs;ys])';
-
-hold on;
-plot(rotated_p(:,1), rotated_p(:,2), '--','color', 'c', 'linewidth',2);
+% rotated_p = (R' * [xs;ys])';
+% 
+% hold on;
+% plot(rotated_p(:,1), rotated_p(:,2), '--','color', 'c', 'linewidth',2);
 Pbase = K\[xs(1);ys(1);1];
-
-t = (R' * top_point')';
-plot(t(1),t(2), 'k*');
+ 
+% t = (R' * top_point')';
+% plot(t(1),t(2), 'k*');
 
 p1 = [ys; vecnorm([xs;ys] - [lx;ly], 2, 1); ly; lx];
 % Remove points with repeated y-values
