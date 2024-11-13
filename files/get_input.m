@@ -1,29 +1,24 @@
-function [symmetry_angle,mask,lx,ly,rx,ry,topPoint,R] = get_input(mask)
+function [symmetry_angle,rotated_mask,lx,ly,rx,ry,topPoint,R] = get_input(obj_mask)
 
 
-% boundaries = bwperim(mask);
-% [y,x] = find(boundaries);
-[y, x] = get_mask_boundary(mask);
+[y, x] = get_mask_boundary(obj_mask);
 
-% x = movmedian(double(x), 5);
-% y = movmedian(double(y), 5);
-
-while length(x) > 3000
+while length(x) > 1000
     x = x(1:2:end);
     y = y(1:2:end);
 end
 
 % find symmetry angle
-symmetry_angle1 = regionprops(logical(mask), 'Orientation').Orientation;
+symmetry_angle1 = regionprops(logical(obj_mask), 'Orientation').Orientation;
 if symmetry_angle1 < 0
     symmetry_angle1 = symmetry_angle1+90;
 else
     symmetry_angle1 = symmetry_angle1-90;
 end
 
-symmetry_angle = find_symmetry_axis_reflection(logical(mask));
+symmetry_angle = find_symmetry_axis_reflection(logical(obj_mask));
 
-if abs(symmetry_angle1 - symmetry_angle) > 45
+if abs(symmetry_angle1 - symmetry_angle) > 45 && abs(symmetry_angle) > 10
     symmetry_angle = symmetry_angle1;
 end
 
@@ -32,40 +27,25 @@ boundaryPoints = [x, y];
 theta = symmetry_angle;
 
 
-
-
 R = [cosd(theta) -sind(theta); sind(theta) cosd(theta)];
-% R = [cosd(theta), sind(theta); sind(theta), -cosd(theta)];
 rotatedPoints = (R * boundaryPoints')';
 
 % Find the centroid of the rotated points
 rotatedCenter = mean(rotatedPoints);
-% Find the top point in the rotated coordinate system
+
 [topPointRotated, top_idx] = min(rotatedPoints(:, 2));
-% Combine the x-coordinate of the centroid and the y-coordinate of the top point
 topPoint = [rotatedPoints(top_idx, 1), topPointRotated];
-% Rotate the top point back to the original coordinate system
-% topPoint = (R' * topPoint')';
+
 
 % get bottom point
-[botPointRotated, bot_idx] = max(rotatedPoints(:, 2));
+[botPointRotated, ~] = max(rotatedPoints(:, 2));
 botPoint = [rotatedCenter(1), botPointRotated];
-% botPoint = (R' * botPoint')';
 
 topPoint = min(topPoint, botPoint);
 
 %%
 leftPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
 rightPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
-
-% if orientation<0
-%     leftPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
-%     rightPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
-% else
-%     rightPoints = rotatedPoints(rotatedPoints(:, 1) <= rotatedCenter(1), :);
-%     leftPoints = rotatedPoints(rotatedPoints(:, 1) > rotatedCenter(1), :);
-% end
-
 
 
 lx = leftPoints(:,1)';
@@ -105,7 +85,12 @@ m = ceil(max(abs(y_rotated))) + 20; % Number of rows (height)
 n = ceil(max(abs(x_rotated))) + 20; % Number of columns (width)
 
 % Create binary mask using poly2mask
-mask = poly2mask(x_rotated, y_rotated, m, n);
+rotated_mask = poly2mask(x_rotated, y_rotated, m, n);
+
+se = strel('disk', min(ceil(size(obj_mask)./128)), 0);
+rotated_mask = imclose(rotated_mask, se);
+rotated_mask = imfill(rotated_mask, "holes");
+
 
 end
 

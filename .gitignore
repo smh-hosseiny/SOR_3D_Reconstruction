@@ -1,6 +1,14 @@
+# Folder view configuration files
+.DS_Store
+Desktop.ini
+
 # Image files
 *.jpg
 *.png
+*.ply
+*.svg
+*.eps
+*.pdf
 
 # Autosave files
 *.asv

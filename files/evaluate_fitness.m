@@ -41,7 +41,7 @@ function cost = evaluate_fitness(x,y,px,py,mask,extremum,side)
     
 
     % Total Cost Calculation
-    cost =1e1*min_distance + 5*penalty_deviation + penalty_outside;
+    cost =1e2*min_distance + 2.5e1*penalty_deviation + penalty_outside;
 
 
 end
