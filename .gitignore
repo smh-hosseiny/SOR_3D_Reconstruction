@@ -9,9 +9,14 @@ Desktop.ini
 *.svg
 *.eps
 *.pdf
+*.obj
 
 # Autosave files
 *.asv
 
 # MATLAB files
 *.mat
+
+*.ipynb
+
+ZeroShape/*

@@ -18,6 +18,7 @@ function err = Cost(i, Pbase, dh, na, n, K, p1,extremum,f,side,bot_point,y_bound
         front_angle = w+1:2*w;
     end
 
+
  
     % Projected x and y coordinates
     x_proj = qcircle(1, front_angle);

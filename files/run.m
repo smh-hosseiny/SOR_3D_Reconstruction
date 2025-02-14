@@ -1,7 +1,7 @@
 function run(img_path, point_cloud_flag, output_folder)
 
     total_tic = tic;
-    %% Step 1: Obtain outlines of the object
+    % Step 1: Obtain outlines of the object
     fprintf('\nStep 1: Obtaining outlines of the object...\n');
     % Background Removal
     [mask_path, img_name] = remove_background(img_path, output_folder);
@@ -41,7 +41,7 @@ function run(img_path, point_cloud_flag, output_folder)
     [surface_patterns, profile, lb, ub] = fit_ellipses_and_reconstruct(img, n, ...
         best_angle, Pbase, K, p1, dh, top_point, bot_point, f, R, x, y, mask2, symmetry_angle);
 
-    % Visualizing 3D Point Cloud
+    %% Visualizing 3D Point Cloud
     visualize_point_cloud(lb, ub, profile, dh, surface_patterns, output_folder, ...
         img_name, point_cloud_flag);
 

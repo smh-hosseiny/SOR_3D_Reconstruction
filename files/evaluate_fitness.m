@@ -14,7 +14,21 @@ function cost = evaluate_fitness(x,y,px,py,mask,extremum,side)
         penalty_deviation = abs(max_y - extremum(2));
          
     end
-
+    
+    % penalty_alignment
+    mean_py_val = mean(py);
+    delta_y = 2; 
+    y_close_mask = abs(y - mean_py_val) < delta_y;
+    x_close = x(y_close_mask);
+    
+    if isempty(x_close)
+        penalty_alignment = 0;
+    else
+        ellipse_left = min(px);
+        ellipse_right = max(px);
+        distances = min(abs(x_close - ellipse_left), abs(x_close - ellipse_right));
+        penalty_alignment = mean(distances);
+    end
 
     % Step 4: outside penalty
     min_x = min(x);
@@ -38,10 +52,9 @@ function cost = evaluate_fitness(x,y,px,py,mask,extremum,side)
     idx = sub2ind(size(mask), min(max(1,round(py)), size(mask,1)), ...
         min(max(1,round(px)),  size(mask,2)) );
     penalty_outside = sum(~mask(idx)); 
-    
-
+  
     % Total Cost Calculation
-    cost =1e2*min_distance + 2.5e1*penalty_deviation + penalty_outside;
+    cost =1e1*min_distance + 2.5e1*penalty_deviation + 2*penalty_outside + 2e1*penalty_alignment;
 
 
 end
