@@ -20,15 +20,22 @@ function [surface_patterns, profile] = fit_profile(Image,n, ang, Pbase, K,...
     surface_patterns = uint8(255 * ones(h,w,3));
    
     % fron mask
-    i = lb + 0.25*(ub-lb);
-    center = Pbase + i*dh*na;
-    th0 = [90, 270];
-    radius = find_radius(K, p1, center, a, b,f, mask2, 5000);
-    Points = center + radius*(a*cosd(th0)+b*sind(th0));
-    qcircle = K*Points;
-    qcircle = qcircle./repmat(qcircle(3,:),3,1);
-
-    [~, idx] = min(vecnorm([qcircle(1,:); qcircle(2,:)] - bot_point'));
+    num_levels = 5;
+    height_ratios = linspace(0.25, 0.75, num_levels);  % spread between 10% and 30% of height
+    all_idx = zeros(1, num_levels);
+    
+    for level = 1:num_levels
+        i = lb + height_ratios(level)*(ub-lb);
+        center = Pbase + i*dh*na;
+        th0 = [90, 270];
+        radius = find_radius(K, p1, center, a, b, f, mask2, 5000);
+        Points = center + radius*(a*cosd(th0)+b*sind(th0));
+        qcircle = K*Points;
+        qcircle = qcircle./repmat(qcircle(3,:), 3, 1);
+        [~, all_idx(level)] = min(vecnorm([qcircle(1,:); qcircle(2,:)] - bot_point'));
+    end
+    
+    idx = mode(all_idx);  % most common index
     front_angle = (1:w) + (idx-1)*w;
  
 

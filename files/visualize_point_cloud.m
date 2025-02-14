@@ -25,20 +25,22 @@ function visualize_point_cloud(lb, ub, profile, dh, surface_patterns, output_fol
     colors = reshape(C, [], 3);
     ptCloud = pointCloud(xyz, 'Color', colors);
 
-    figure;
-    pcshow(ptCloud, 'ViewPlane', 'XZ');
-    title('3D Point cloud');
-    view(0, 10);
+    fig = figure('Position', [100 100 800 600], 'Color', 'white');
+   
+    % Create main axes for point cloud
+    ax = axes('Color', 'white');  
+    pcshow(ptCloud, 'ViewPlane', 'XZ', 'BackgroundColor', 'white'); 
+    grid off
+    axis off
+    title('3D Point cloud', 'FontSize', 20);
+    view(-3, 15);
 
-    xlabel('X (centimeters)');
-    ylabel('Y (centimeters)');
-    zlabel('Z (centimeters)');
-    grid on;
 
     if point_cloud_flag == 1
-        pcwrite(ptCloud, fullfile(output_folder, [img_name, '_3D_obj.ply']));
+       pcwrite(ptCloud, fullfile(output_folder, [img_name, '_3D_obj.ply']));
+       saveas(fig, fullfile(output_folder, [img_name, '_3D_visualization.png']));
     end
 
-   
+    
 
 end
